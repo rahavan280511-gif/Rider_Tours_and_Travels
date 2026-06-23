@@ -1,0 +1,143 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #0f172a;
+  --brand-primary: #4f46e5;
+  --brand-dark: #1e1b4b;
+  --brand-light: #eef2ff;
+  --surface: #f8fafc;
+  --border: #e2e8f0;
+  --muted: #64748b;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: #4f46e5;
+  color: white;
+}
+
+/* Smooth page transitions */
+main {
+  animation: fadeIn 0.2s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── MOBILE RESPONSIVE ───────────────────────────────────────── */
+
+/* Navbar: hide full nav links on mobile, show hamburger */
+.nav-desktop { display: flex !important; }
+.nav-mobile-btn { display: none !important; }
+.nav-mobile-menu { display: none !important; }
+.nav-mobile-menu.open { display: flex !important; }
+
+/* Booking page: 2-col → 1-col on mobile */
+.book-grid { display: grid; grid-template-columns: minmax(0,2fr) minmax(0,1fr); gap: 28px; align-items: start; }
+
+/* Admin dashboard stats: smaller on mobile */
+.admin-stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+
+@media (max-width: 768px) {
+  /* Navbar */
+  .nav-desktop { display: none !important; }
+  .nav-mobile-btn { display: flex !important; }
+  .nav-mobile-menu {
+    position: fixed;
+    top: 64px; left: 0; right: 0;
+    background: rgba(255,255,255,0.98);
+    border-bottom: 1px solid #e2e8f0;
+    flex-direction: column;
+    padding: 20px 24px;
+    gap: 0px;
+    z-index: 99;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  }
+  .nav-mobile-menu a {
+    font-size: 16px;
+    font-weight: 600;
+    color: #0f172a;
+    text-decoration: none;
+    padding: 14px 0;
+    border-bottom: 1px solid #f1f5f9;
+    display: block;
+    width: 100%;
+  }
+  .nav-mobile-menu a:last-child { border-bottom: none; }
+
+  /* Booking page: stack on mobile */
+  .book-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Fare summary: not sticky when stacked */
+  .fare-summary-col { position: static !important; }
+
+  /* Booking form inner 2-col grids collapse */
+  .book-inner-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Full-span items become normal block in 1-col grid */
+  .book-full-span { grid-column: auto !important; }
+
+  /* Admin stats: 2-col on mobile */
+  .admin-stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* Ensure tables scroll horizontally */
+  .mobile-scroll { overflow-x: auto !important; }
+
+  /* Footer: reduce padding */
+  .footer-inner { padding: 40px 16px !important; }
+
+  /* Admin dashboard padding */
+  .admin-main { padding: 20px 16px !important; }
+
+  /* Homepage hero: reduce padding on mobile */
+  .hero-section { padding: 48px 20px !important; }
+
+  /* Fleet filter buttons: larger tap targets */
+  .filter-btn {
+    padding: 10px 18px !important;
+    font-size: 14px !important;
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Admin stats: 1-col on very small screens */
+  .admin-stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Booking page padding */
+  .book-page-body { padding: 24px 16px 40px !important; }
+
+  /* Very small screens: reduce section padding */
+  section { padding-top: 48px !important; padding-bottom: 48px !important; }
+}
+
+
