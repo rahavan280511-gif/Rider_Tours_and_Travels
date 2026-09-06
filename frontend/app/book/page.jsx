@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import api from '../../src/services/api';
 
 // ── Fare Calculator ──────────────────────────────────────────────────────────
@@ -145,9 +146,9 @@ function BookingForm() {
             onClick={() => { setSuccess(null); setForm({ customerName:'', email:'', phone:'', pickup:'', drop:'', date:'', time:'', tripType:'Local', vehicle: vehicles[0]?._id||'', kms:40, durationHours:4 }); }}
             style={{ flex: 1, border: '1px solid #e2e8f0', background: '#fff', color: '#475569', fontWeight: 700, padding: '14px', borderRadius: '14px', cursor: 'pointer', fontSize: '14px' }}
           >Book Another</button>
-          <a href="/" style={{ flex: 1, background: '#4f46e5', color: '#fff', fontWeight: 800, padding: '14px', borderRadius: '14px', textDecoration: 'none', textAlign: 'center', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Link href="/" style={{ flex: 1, background: '#4f46e5', color: '#fff', fontWeight: 800, padding: '14px', borderRadius: '14px', textDecoration: 'none', textAlign: 'center', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             Back to Home
-          </a>
+          </Link>
         </div>
       </div>
     </div>

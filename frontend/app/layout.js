@@ -45,7 +45,7 @@ export default function RootLayout({ children }) {
                     alt="Rider Tours Logo"
                     width={48}
                     height={48}
-                    style={{ objectFit: 'contain', filter: 'invert(1) brightness(2)' }}
+                    style={{ objectFit: 'cover', borderRadius: '50%' }}
                   />
                   <span style={{ fontSize: '18px', fontWeight: 900, color: '#fff' }}>Rider Tours</span>
                 </div>

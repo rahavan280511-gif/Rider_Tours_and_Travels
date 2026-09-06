@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import api from '../../../src/services/api';
 
@@ -42,24 +42,26 @@ export default function AdminDashboard() {
     const savedEmail = localStorage.getItem('rider_tours_admin_email');
     if (!savedToken) {
       router.push('/admin/login');
-    } else {
+      return;
+    }
+    // Schedule state updates via setTimeout to avoid synchronous setState in effect
+    setTimeout(() => {
       setToken(savedToken);
       setAdminEmail(savedEmail || 'owner@ridertours.com');
       setAuthChecking(false);
-    }
+    }, 0);
   }, [router]);
 
-  // Fetch all dashboard data when token is ready
-  const fetchData = async (currentToken) => {
+  // Fetch all dashboard data — used by the "Try Again" button and the useEffect below
+  const fetchData = useCallback(async () => {
     setLoading(true);
     setError('');
-    const headers = { Authorization: `Bearer ${currentToken}` };
     try {
       const [statsRes, bookingsRes, enquiriesRes, vehiclesRes] = await Promise.all([
-        api.get('/analytics', { headers }),
-        api.get('/bookings', { headers }),
-        api.get('/enquiries', { headers }),
-        api.get('/vehicles') // vehicles public endpoint, no auth required
+        api.get('/analytics'),
+        api.get('/bookings'),
+        api.get('/enquiries'),
+        api.get('/vehicles'), // vehicles public endpoint, no auth required
       ]);
 
       if (statsRes.data?.success) setStats(statsRes.data.stats);
@@ -70,7 +72,6 @@ export default function AdminDashboard() {
     } catch (err) {
       console.error(err);
       if (err.response?.status === 401) {
-        // Token expired or invalid
         localStorage.removeItem('rider_tours_admin_token');
         router.push('/admin/login');
       } else {
@@ -79,13 +80,13 @@ export default function AdminDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [router]);
 
   useEffect(() => {
-    if (token) {
-      fetchData(token);
-    }
-  }, [token]);
+    if (!token) return;
+    fetchData();
+  }, [token, fetchData]);
+
 
   // Logout handler
   const handleLogout = () => {
@@ -97,15 +98,14 @@ export default function AdminDashboard() {
 
   // Update booking status
   const handleUpdateBookingStatus = async (bookingId, newStatus) => {
-    const headers = { Authorization: `Bearer ${token}` };
     try {
-      const res = await api.put(`/bookings/${bookingId}`, { status: newStatus }, { headers });
+      const res = await api.put(`/bookings/${bookingId}`, { status: newStatus });
       if (res.data?.success) {
         // Update local list
         setBookings(prev => prev.map(b => b._id === bookingId ? { ...b, status: newStatus } : b));
         showToast(`Booking status updated to ${newStatus}`);
         // Refresh stats
-        const statsRes = await api.get('/analytics', { headers });
+        const statsRes = await api.get('/analytics');
         if (statsRes.data?.success) setStats(statsRes.data.stats);
       }
     } catch (err) {
@@ -116,13 +116,12 @@ export default function AdminDashboard() {
 
   // Update booking payment status
   const handleUpdateBookingPayment = async (bookingId, newPaymentStatus) => {
-    const headers = { Authorization: `Bearer ${token}` };
     try {
-      const res = await api.put(`/bookings/${bookingId}`, { paymentStatus: newPaymentStatus }, { headers });
+      const res = await api.put(`/bookings/${bookingId}`, { paymentStatus: newPaymentStatus });
       if (res.data?.success) {
         setBookings(prev => prev.map(b => b._id === bookingId ? { ...b, paymentStatus: newPaymentStatus } : b));
         showToast(`Payment status updated to ${newPaymentStatus}`);
-        const statsRes = await api.get('/analytics', { headers });
+        const statsRes = await api.get('/analytics');
         if (statsRes.data?.success) setStats(statsRes.data.stats);
       }
     } catch (err) {
@@ -135,13 +134,12 @@ export default function AdminDashboard() {
   const handleDeleteBooking = async (bookingId, displayId) => {
     if (!window.confirm(`Are you sure you want to delete Booking ${displayId}?`)) return;
 
-    const headers = { Authorization: `Bearer ${token}` };
     try {
-      const res = await api.delete(`/bookings/${bookingId}`, { headers });
+      const res = await api.delete(`/bookings/${bookingId}`);
       if (res.data?.success) {
         setBookings(prev => prev.filter(b => b._id !== bookingId));
         showToast(`Booking ${displayId} deleted successfully`);
-        const statsRes = await api.get('/analytics', { headers });
+        const statsRes = await api.get('/analytics');
         if (statsRes.data?.success) setStats(statsRes.data.stats);
       }
     } catch (err) {
@@ -152,13 +150,12 @@ export default function AdminDashboard() {
 
   // Update enquiry status
   const handleUpdateEnquiryStatus = async (enquiryId, newStatus) => {
-    const headers = { Authorization: `Bearer ${token}` };
     try {
-      const res = await api.put(`/enquiries/${enquiryId}`, { status: newStatus }, { headers });
+      const res = await api.put(`/enquiries/${enquiryId}`, { status: newStatus });
       if (res.data?.success) {
         setEnquiries(prev => prev.map(e => e._id === enquiryId ? { ...e, status: newStatus } : e));
         showToast(`Enquiry marked as ${newStatus}`);
-        const statsRes = await api.get('/analytics', { headers });
+        const statsRes = await api.get('/analytics');
         if (statsRes.data?.success) setStats(statsRes.data.stats);
       }
     } catch (err) {
@@ -171,13 +168,12 @@ export default function AdminDashboard() {
   const handleDeleteEnquiry = async (enquiryId) => {
     if (!window.confirm('Are you sure you want to delete this enquiry?')) return;
 
-    const headers = { Authorization: `Bearer ${token}` };
     try {
-      const res = await api.delete(`/enquiries/${enquiryId}`, { headers });
+      const res = await api.delete(`/enquiries/${enquiryId}`);
       if (res.data?.success) {
         setEnquiries(prev => prev.filter(e => e._id !== enquiryId));
         showToast('Enquiry deleted successfully');
-        const statsRes = await api.get('/analytics', { headers });
+        const statsRes = await api.get('/analytics');
         if (statsRes.data?.success) setStats(statsRes.data.stats);
       }
     } catch (err) {
@@ -316,7 +312,7 @@ export default function AdminDashboard() {
             background: '#fef2f2', border: '1px solid #fecaca', color: '#b91c1c',
             borderRadius: '12px', padding: '16px', marginBottom: '24px', fontWeight: 700
           }}>
-            ⚠️ {error} <button onClick={() => fetchData(token)} style={{ background: 'none', border: 'none', color: '#4f46e5', textDecoration: 'underline', cursor: 'pointer', fontWeight: 800 }}>Try Again</button>
+            ⚠️ {error} <button onClick={() => fetchData()} style={{ background: 'none', border: 'none', color: '#4f46e5', textDecoration: 'underline', cursor: 'pointer', fontWeight: 800 }}>Try Again</button>
           </div>
         )}
 

@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const Booking = require('../models/Booking');
 const { protect } = require('../middleware/auth');
+const { sendBookingNotification } = require('../services/whatsappService'); // Import WhatsApp service for sending booking alerts
+
 
 // Generate a collision-resistant booking ID (timestamp base-36 + random suffix)
 const generateBookingId = () => {
@@ -22,6 +24,13 @@ router.post('/', async (req, res) => {
     
     // Populate vehicle details before returning
     const populated = await booking.populate('vehicle');
+    
+    // Automatically call the WhatsApp service after the booking is stored.
+    // The service is invoked asynchronously, and any internal errors are logged
+    // so that the client's HTTP response is not interrupted or delayed.
+    sendBookingNotification(populated).catch(err => {
+      console.error('[Bookings Route] Asynchronous trigger of sendBookingNotification failed:', err);
+    });
     
     res.status(201).json({
       success: true,

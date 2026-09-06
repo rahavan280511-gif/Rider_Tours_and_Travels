@@ -29,8 +29,7 @@ export default function NavBar() {
         {/* Logo */}
         <Link href="/" onClick={close} style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
           <div style={{
-            background: '#000',
-            borderRadius: '10px',
+            borderRadius: '50%',
             width: '44px',
             height: '44px',
             display: 'flex',
@@ -44,7 +43,7 @@ export default function NavBar() {
               alt="Rider Tours Logo"
               width={44}
               height={44}
-              style={{ objectFit: 'contain', filter: 'invert(1) brightness(2)' }}
+              style={{ objectFit: 'cover' }}
               priority
             />
           </div>

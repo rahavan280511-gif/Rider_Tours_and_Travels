@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import api from '../../../src/services/api';
 
 export default function AdminLogin() {
@@ -271,7 +272,7 @@ export default function AdminLogin() {
 
         {/* Back Link */}
         <div style={{ textAlign: 'center', marginTop: '24px' }}>
-          <a
+          <Link
             href="/"
             style={{
               fontSize: '13px',
@@ -284,7 +285,7 @@ export default function AdminLogin() {
             onMouseOut={(e) => e.target.style.color = '#6366f1'}
           >
             ← Back to Rider Tours website
-          </a>
+          </Link>
         </div>
       </div>
     </div>
