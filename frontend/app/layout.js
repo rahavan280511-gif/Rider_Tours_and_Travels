@@ -70,7 +70,7 @@ export default function RootLayout({ children }) {
                 <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '14px' }}>
                   <li>📞 +91 98415 80722</li>
                   <li>📧 ridertoursandtravels29@gmail.com</li>
-                  <li>📍 Chennai, Tamil Nadu</li>
+                  <li style={{ lineHeight: 1.5 }}>📍 No: 5, Ground Floor, Officer Colony, 4th Street, Adambakkam, Chennai - 600088</li>
                 </ul>
               </div>
             </div>
