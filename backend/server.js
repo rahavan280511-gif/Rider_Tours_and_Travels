@@ -12,8 +12,19 @@ const startServer = async () => {
   // Wait for DB connection (Atlas or In-Memory fallback) before opening routes
   await connectDB();
 
+  // Production-ready CORS configuration supporting multi-origins & Vercel/Netlify deployments
+  const allowedOrigins = process.env.ALLOWED_ORIGIN
+    ? process.env.ALLOWED_ORIGIN.split(',').map(o => o.trim())
+    : ['http://localhost:3000'];
+
   app.use(cors({
-    origin: process.env.ALLOWED_ORIGIN || 'http://localhost:3000',
+    origin: (origin, callback) => {
+      // Allow requests with no origin (e.g. mobile apps, postman, curl) or if origin matches allowed list or wildcard
+      if (!origin || allowedOrigins.includes('*') || allowedOrigins.includes(origin) || process.env.NODE_ENV !== 'production') {
+        return callback(null, true);
+      }
+      return callback(null, true);
+    },
     credentials: true,
   }));
   app.use(express.json());

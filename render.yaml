@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: rider-tours-backend
+    env: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 5000
+      - key: NODE_ENV
+        value: production
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: ALLOWED_ORIGIN
+        sync: false
+      - key: WHATSAPP_TOKEN
+        sync: false
+      - key: PHONE_NUMBER_ID
+        sync: false
+      - key: WHATSAPP_NUMBER_1
+        value: "919841580722"
+      - key: WHATSAPP_NUMBER_2
+        value: "919994765515"
+      - key: WHATSAPP_TEMPLATE_NAME
+        value: booking_notification
+      - key: WHATSAPP_TEMPLATE_LANG
+        value: en_US
