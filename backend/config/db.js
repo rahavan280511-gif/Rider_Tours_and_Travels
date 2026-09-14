@@ -9,6 +9,11 @@ try {
 }
 
 const connectDB = async () => {
+  // Reuse existing database connection in Vercel serverless functions
+  if (mongoose.connection.readyState >= 1) {
+    return;
+  }
+
   const primaryUri = process.env.MONGO_URI;
   
   if (primaryUri) {

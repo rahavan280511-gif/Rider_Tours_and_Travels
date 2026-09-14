@@ -1,37 +1,24 @@
-# 🚀 Rider Tours & Travels — Deployment Guide
+# ⚡ Rider Tours & Travels — Vercel Deployment Guide
 
-This guide details step-by-step how to deploy both the **Express Backend** and **Next.js Frontend** to production cloud providers (Render & Vercel) connected to your **MongoDB Atlas** database.
-
----
-
-## 📋 Architecture & Platform Choices
-
-- **Database**: MongoDB Atlas (Cloud Managed Database)
-- **Backend API**: Render.com (Node.js / Express Web Service)
-- **Frontend App**: Vercel.com (Next.js Application)
+This guide explains step-by-step how to deploy **BOTH the Express Backend and Next.js Frontend on Vercel**.
 
 ---
 
-## 🔹 STEP 1: Deploy Backend API to Render.com
+## 🌟 Recommended Option: Single Vercel Project (1-Click Deployment)
 
-1. Sign in to [Render.com](https://render.com) using your GitHub account.
-2. Click **New +** → **Web Service**.
-3. Select your repository `rahavan280511-gif/Rider_Tours_and_Travels`.
-4. Configure the Web Service settings:
-   - **Name**: `rider-tours-backend`
-   - **Root Directory**: `backend`
-   - **Environment**: `Node`
-   - **Build Command**: `npm install`
-   - **Start Command**: `npm start`
-5. Add **Environment Variables** under the **Environment** tab:
+With our root `vercel.json` configuration, Vercel automatically deploys **both** your Next.js Frontend and your Express API Backend together in one Vercel project!
+
+### Step-by-Step Instructions:
+
+1. Sign in to [Vercel.com](https://vercel.com) using your GitHub account.
+2. Click **Add New...** → **Project**.
+3. Import your GitHub repository: `rahavan280511-gif/Rider_Tours_and_Travels`.
+4. Under **Environment Variables**, add:
 
    | Key | Value / Example |
    | :--- | :--- |
-   | `PORT` | `5000` |
-   | `NODE_ENV` | `production` |
    | `MONGO_URI` | `mongodb+srv://...` (Your MongoDB Atlas connection string) |
-   | `JWT_SECRET` | `your_secure_jwt_secret_2026` |
-   | `ALLOWED_ORIGIN` | `https://your-frontend.vercel.app` (Your Vercel URL once created) |
+   | `JWT_SECRET` | `your_production_jwt_secret_2026` |
    | `WHATSAPP_TOKEN` | Meta WhatsApp Cloud API Access Token |
    | `PHONE_NUMBER_ID` | `1299439553252195` |
    | `WHATSAPP_NUMBER_1` | `919841580722` |
@@ -39,41 +26,53 @@ This guide details step-by-step how to deploy both the **Express Backend** and *
    | `WHATSAPP_TEMPLATE_NAME` | `booking_notification` |
    | `WHATSAPP_TEMPLATE_LANG` | `en_US` |
 
-6. Click **Create Web Service**. Once built, copy your backend URL (e.g. `https://rider-tours-backend.onrender.com`).
+5. Click **Deploy**. Vercel will build:
+   - Your Next.js Frontend pages at `https://your-project.vercel.app`
+   - Your Express Backend API endpoints automatically at `https://your-project.vercel.app/api/...`
 
 ---
 
-## 🔹 STEP 2: Deploy Frontend App to Vercel
+## 🔹 Alternative Option: Two Separate Vercel Projects
 
-1. Sign in to [Vercel.com](https://vercel.com) using your GitHub account.
-2. Click **Add New...** → **Project**.
-3. Import your GitHub repository `rahavan280511-gif/Rider_Tours_and_Travels`.
-4. Configure Project settings:
-   - **Framework Preset**: Next.js
-   - **Root Directory**: Select `frontend`
-5. Under **Environment Variables**, add:
+If you prefer keeping Backend and Frontend in separate Vercel project dashboards:
 
-   | Key | Value |
-   | :--- | :--- |
-   | `NEXT_PUBLIC_API_URL` | `https://rider-tours-backend.onrender.com/api` (Replace with your actual Render backend URL) |
+### Project 1: Backend API on Vercel
+1. On Vercel, click **Add New...** → **Project**.
+2. Select `rahavan280511-gif/Rider_Tours_and_Travels`.
+3. Set **Root Directory** to `backend`.
+4. Add Environment Variables (`MONGO_URI`, `JWT_SECRET`, `WHATSAPP_TOKEN`, etc.).
+5. Deploy. You will get a backend URL (e.g. `https://rider-tours-api.vercel.app`).
 
-6. Click **Deploy**. Vercel will build and launch your production site!
-
----
-
-## 🔹 STEP 3: Connect Frontend URL to Backend CORS
-
-Once Vercel assigns your production frontend URL (e.g. `https://rider-tours.vercel.app`):
-1. Go back to Render.com → **Environment**.
-2. Update `ALLOWED_ORIGIN` to your Vercel URL: `https://rider-tours.vercel.app`.
-3. Save changes (Render will automatically redeploy with the updated CORS policy).
+### Project 2: Frontend App on Vercel
+1. Click **Add New...** → **Project**.
+2. Select `rahavan280511-gif/Rider_Tours_and_Travels`.
+3. Set **Root Directory** to `frontend`.
+4. Add Environment Variable:
+   - `NEXT_PUBLIC_API_URL` = `https://rider-tours-api.vercel.app/api`
+5. Deploy.
 
 ---
 
-## 🛠️ Verification Checklist
+## 🛠️ Environment Variables Checklist for Vercel
 
-- [x] Backend connects successfully to MongoDB Atlas in production (`connectDB()`).
-- [x] `NEXT_PUBLIC_API_URL` routes API calls correctly to Render backend.
-- [x] Admin Login (`/admin/login`) issues production JWT tokens.
-- [x] User Booking submissions write to MongoDB Atlas and trigger WhatsApp alerts.
-- [x] Admin Dashboard (`/admin/dashboard`) renders bookings and generates PDF Log Sheets seamlessly.
+```env
+# ── Database & Auth ──
+MONGO_URI=mongodb+srv://<username>:<password>@cluster0.xxx.mongodb.net/rider_tours?retryWrites=true&w=majority
+JWT_SECRET=your_production_jwt_secret_2026
+
+# ── WhatsApp Cloud API ──
+WHATSAPP_TOKEN=your_meta_whatsapp_token
+PHONE_NUMBER_ID=1299439553252195
+WHATSAPP_NUMBER_1=919841580722
+WHATSAPP_NUMBER_2=919994765515
+WHATSAPP_TEMPLATE_NAME=booking_notification
+WHATSAPP_TEMPLATE_LANG=en_US
+```
+
+---
+
+## ✅ Deployment Features Verified
+- [x] Express backend configured as Vercel Serverless Function (`backend/api/index.js`).
+- [x] Mongoose connection caching added to `backend/config/db.js` (`readyState >= 1`).
+- [x] Root `vercel.json` routes `/api/*` to backend and `/*` to Next.js frontend.
+- [x] Zero CORS issues when deployed as a unified Vercel project.
