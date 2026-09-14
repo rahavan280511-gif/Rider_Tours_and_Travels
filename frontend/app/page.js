@@ -87,7 +87,7 @@ export default function Home() {
           {/* Stats Grid */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
             {[
-              { label: 'Vehicles Available', value: '14+' },
+              { label: 'Vehicles Available', value: '10+' },
               { label: 'Vehicle Categories', value: '6' },
               { label: 'Trip Types Covered', value: '3' },
               { label: 'Years of Service', value: '8+' },

@@ -1,4 +1,9 @@
 const mongoose = require('mongoose');
+const dns = require('dns');
+try {
+  dns.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1']);
+} catch (e) {}
+
 const dotenv = require('dotenv');
 const User = require('../models/User');
 const Vehicle = require('../models/Vehicle');
@@ -107,6 +112,23 @@ const seedData = async () => {
         available: true,
       },
       {
+        name: 'Toyota Rumion',
+        category: 'MPV',
+        capacity: 7,
+        features: ['Dual AC', 'Touch Screen Audio', 'Rear Parking Camera', 'Spacious Seating', 'ISOFIX Mounts', 'USB Chargers'],
+        pricing: {
+          hrs4_kms40: 2000,
+          hrs8_kms80: 3500,
+          extraHr: 325,
+          extraKm: 21,
+          outstationRate: 21,
+          minKmsDay: 300,
+          discountedPrice: 5985,
+        },
+        imageUrl: 'https://cdn-s3.autocarindia.com/legacy/cdni/mmv_images/colors/20250714024406_Toyota_Rumion_Cafe_White[1].jpg?w=640&q=75&fm=auto',
+        available: true,
+      },
+      {
         name: 'Toyota Innova Crysta',
         category: 'Premium',
         capacity: 7,
@@ -175,23 +197,6 @@ const seedData = async () => {
         available: true,
       },
       {
-        name: 'Hyundai Venue',
-        category: 'Sedan',
-        capacity: 5,
-        features: ['AC', 'Infotainment System', 'Airbags', 'Compact Boot Space', 'USB Charger'],
-        pricing: {
-          hrs4_kms40: 1600,
-          hrs8_kms80: 2600,
-          extraHr: 250,
-          extraKm: 18,
-          outstationRate: 18,
-          minKmsDay: 300,
-          discountedPrice: 5130,
-        },
-        imageUrl: 'https://imgd-ct.aeplcdn.com/1056x660/n/cw/ec/197163/venue-exterior-left-front-three-quarter-34.jpeg?isig=0&q=80',
-        available: true,
-      },
-      {
         name: 'Honda Amaze',
         category: 'Sedan',
         capacity: 5,
@@ -225,57 +230,6 @@ const seedData = async () => {
         imageUrl: 'https://imgd-ct.aeplcdn.com/1056x660/n/cw/ec/206488/glanza-right-front-three-quarter.jpeg?isig=0&q=80',
         available: true,
       },
-      {
-        name: 'Mahindra Marazzo',
-        category: 'MPV',
-        capacity: 7,
-        features: ['Surround Cool AC', 'Touch Screen Audio', 'Rear Parking Sensors', 'Spacious Seating', 'ISOFIX Mounts'],
-        pricing: {
-          hrs4_kms40: 2000,
-          hrs8_kms80: 3500,
-          extraHr: 325,
-          extraKm: 21,
-          outstationRate: 21,
-          minKmsDay: 300,
-          discountedPrice: 5985,
-        },
-        imageUrl: 'https://imgd-ct.aeplcdn.com/1056x660/n/cw/ec/150949/marazzo-right-front-three-quarter.jpeg?isig=0&q=80',
-        available: true,
-      },
-      {
-        name: 'Hyundai Alcazar',
-        category: 'MPV',
-        capacity: 7,
-        features: ['Panoramic Sunroof', 'Bose Premium Audio', 'Wireless Charger', 'Ambient Lighting', 'Captain Seats'],
-        pricing: {
-          hrs4_kms40: 2000,
-          hrs8_kms80: 3500,
-          extraHr: 325,
-          extraKm: 21,
-          outstationRate: 21,
-          minKmsDay: 300,
-          discountedPrice: 5985,
-        },
-        imageUrl: 'https://imgd-ct.aeplcdn.com/1056x660/n/cw/ec/158925/alcazar-facelift-right-front-three-quarter-3.jpeg?isig=0&q=80',
-        available: true,
-      },
-      {
-        name: 'Maruti XL6',
-        category: 'MPV',
-        capacity: 7,
-        features: ['AC with Auto Climate', 'SmartPlay Infotainment', 'Cruise Control', 'Captain Seats', 'Leather Upholstery'],
-        pricing: {
-          hrs4_kms40: 2000,
-          hrs8_kms80: 3500,
-          extraHr: 325,
-          extraKm: 21,
-          outstationRate: 21,
-          minKmsDay: 300,
-          discountedPrice: 5985,
-        },
-        imageUrl: 'https://imgd-ct.aeplcdn.com/1056x660/n/cw/ec/115601/2022-xl6-exterior-right-front-three-quarter-3.jpeg?isig=0&q=80',
-        available: true,
-      },
     ];
 
     const seededVehicles = await Vehicle.insertMany(vehiclesData);
@@ -296,7 +250,7 @@ const seedData = async () => {
         drop: 'OMR, Chennai',
         date: new Date(now - 4 * oneDay).toISOString().split('T')[0],
         time: '10:30',
-        vehicle: seededVehicles[4]._id, // Innova Crysta
+        vehicle: seededVehicles[5]._id, // Innova Crysta
         tripType: 'Local',
         estimatedFare: 4000,
         status: 'Completed',
@@ -314,7 +268,7 @@ const seedData = async () => {
         drop: 'Pondicherry',
         date: new Date(now - 3 * oneDay).toISOString().split('T')[0],
         time: '06:00',
-        vehicle: seededVehicles[5]._id, // Innova Hycross
+        vehicle: seededVehicles[6]._id, // Innova Hycross
         tripType: 'Outstation',
         estimatedFare: 9000,
         status: 'Completed',
@@ -367,7 +321,7 @@ const seedData = async () => {
         drop: 'OMR, Karapakkam',
         date: now.toISOString().split('T')[0],
         time: '18:00',
-        vehicle: seededVehicles[7]._id, // Urbania
+        vehicle: seededVehicles[8]._id, // Urbania
         tripType: 'Local',
         estimatedFare: 10000,
         status: 'Confirmed',
@@ -412,7 +366,7 @@ const seedData = async () => {
         slug: 'sedan',
         capacity: '4 + 1 Seats',
         capacitySeats: 5,
-        vehicles: ['Maruti Dzire', 'Hyundai Venue', 'Honda Amaze', 'Toyota Etios', 'Toyota Glanza'],
+        vehicles: ['Maruti Dzire', 'Honda Amaze', 'Toyota Etios', 'Toyota Glanza'],
         pricing: {
           local40km: 1600,
           local80km: 2600,
@@ -430,7 +384,7 @@ const seedData = async () => {
         slug: 'mpv',
         capacity: '6 + 1 Seats',
         capacitySeats: 7,
-        vehicles: ['Kia Carens', 'Mahindra Marazzo', 'Maruti Ertiga', 'Hyundai Alcazar', 'Maruti XL6'],
+        vehicles: ['Kia Carens', 'Maruti Ertiga', 'Toyota Rumion'],
         pricing: {
           local40km: 2000,
           local80km: 3500,

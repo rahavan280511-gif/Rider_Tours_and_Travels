@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import api from '../../../src/services/api';
+import BillModal from './components/BillModal';
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -25,6 +26,7 @@ export default function AdminDashboard() {
   const [bookingFilter, setBookingFilter] = useState('All'); // All, Pending, Confirmed, Completed, Cancelled
   const [bookingSearch, setBookingSearch] = useState('');
   const [enquirySearch, setEnquirySearch] = useState('');
+  const [selectedBillBooking, setSelectedBillBooking] = useState(null);
 
   // Toast notification state
   const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
@@ -229,7 +231,7 @@ export default function AdminDashboard() {
       fontFamily: "'Inter', sans-serif", boxSizing: 'border-box',
       display: 'flex', flexDirection: 'column'
     }}>
-      {/* Bypass customer header/footer */}
+      {/* Bypass customer header/footer & responsive styles */}
       <style>{`
         #main-header { display: none !important; }
         #main-footer { display: none !important; }
@@ -237,6 +239,34 @@ export default function AdminDashboard() {
         select:focus, input:focus {
           border-color: #6366f1 !important;
           outline: none;
+        }
+
+        .admin-stats-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 20px;
+        }
+
+        @media (max-width: 1024px) {
+          .admin-stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+          }
+        }
+
+        @media (max-width: 640px) {
+          .admin-stats-grid {
+            grid-template-columns: 1fr;
+            gap: 12px;
+          }
+          .admin-main {
+            padding: 16px 12px !important;
+          }
+          .admin-header-controls {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 12px !important;
+          }
         }
       `}</style>
 
@@ -598,19 +628,35 @@ export default function AdminDashboard() {
 
                                 {/* Actions */}
                                 <td style={{ padding: '16px 20px' }}>
-                                  <button
-                                    onClick={() => handleDeleteBooking(booking._id, booking.bookingId)}
-                                    style={{
-                                      border: 'none', background: 'none', cursor: 'pointer',
-                                      color: '#ef4444', fontSize: '16px', padding: '6px', borderRadius: '4px',
-                                      transition: 'background 0.2s'
-                                    }}
-                                    onMouseOver={(e) => e.target.style.background = '#fee2e2'}
-                                    onMouseOut={(e) => e.target.style.background = 'none'}
-                                    title="Delete booking"
-                                  >
-                                    🗑️
-                                  </button>
+                                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                    <button
+                                      onClick={() => setSelectedBillBooking(booking)}
+                                      style={{
+                                        border: '1px solid #c7d2fe', background: '#eef2ff', cursor: 'pointer',
+                                        color: '#4f46e5', fontSize: '12px', padding: '6px 12px', borderRadius: '8px',
+                                        fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px',
+                                        transition: 'all 0.2s'
+                                      }}
+                                      onMouseOver={(e) => { e.currentTarget.style.background = '#4f46e5'; e.currentTarget.style.color = '#ffffff'; }}
+                                      onMouseOut={(e) => { e.currentTarget.style.background = '#eef2ff'; e.currentTarget.style.color = '#4f46e5'; }}
+                                      title="Generate Log Sheet Bill PDF"
+                                    >
+                                      <span>🧾</span> Bill
+                                    </button>
+                                    <button
+                                      onClick={() => handleDeleteBooking(booking._id, booking.bookingId)}
+                                      style={{
+                                        border: 'none', background: 'none', cursor: 'pointer',
+                                        color: '#ef4444', fontSize: '16px', padding: '6px', borderRadius: '4px',
+                                        transition: 'background 0.2s'
+                                      }}
+                                      onMouseOver={(e) => e.target.style.background = '#fee2e2'}
+                                      onMouseOut={(e) => e.target.style.background = 'none'}
+                                      title="Delete booking"
+                                    >
+                                      🗑️
+                                    </button>
+                                  </div>
                                 </td>
                               </tr>
                             );
@@ -799,6 +845,13 @@ export default function AdminDashboard() {
           </div>
         )}
 
+        {/* Render Bill Modal when selected */}
+        {selectedBillBooking && (
+          <BillModal
+            booking={selectedBillBooking}
+            onClose={() => setSelectedBillBooking(null)}
+          />
+        )}
       </main>
     </div>
   );

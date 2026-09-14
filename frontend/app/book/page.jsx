@@ -135,8 +135,8 @@ function BookingForm() {
               <span style={{ fontWeight: 900, color, fontSize: size }}>{val}</span>
             </div>
           ))}
-          <div style={{ borderTop: '1px solid #c7d2fe', paddingTop: '12px', display: 'flex', justifyContent: 'space-between' }}>
-            <span style={{ color: '#64748b', fontSize: '13px' }}>Estimated Fare</span>
+          <div style={{ borderTop: '1px solid #c7d2fe', paddingTop: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ color: '#64748b', fontSize: '13px' }}>Estimated Fare <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 600 }}>(+ 5% GST)</span></span>
             <span style={{ fontWeight: 900, color: '#16a34a', fontSize: '18px' }}>₹{success.estimatedFare?.toLocaleString('en-IN')}</span>
           </div>
         </div>
@@ -342,14 +342,17 @@ function BookingForm() {
 
                     <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: '16px' }}>
                       <p style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '4px' }}>Estimated Fare</p>
-                      <div style={{ fontSize: '40px', fontWeight: 900, color: '#4f46e5' }}>
-                        ₹{estimatedFare.toLocaleString('en-IN')}
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', flexWrap: 'wrap' }}>
+                        <div style={{ fontSize: '40px', fontWeight: 900, color: '#4f46e5' }}>
+                          ₹{estimatedFare.toLocaleString('en-IN')}
+                        </div>
+                        <span style={{ fontSize: '14px', fontWeight: 700, color: '#64748b' }}>(+ 5% GST)</span>
                       </div>
                       <p style={{ fontSize: '11px', color: '#94a3b8', marginTop: '4px' }}>* Inclusive of driver allowance & fuel</p>
                     </div>
 
-                    <div style={{ marginTop: '16px', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '12px', padding: '12px', fontSize: '12px', color: '#92400e' }}>
-                      <strong>Note:</strong> Final fare may vary slightly based on actual distance and waiting time.
+                    <div style={{ marginTop: '16px', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '12px', padding: '12px', fontSize: '12px', color: '#92400e', lineHeight: 1.5 }}>
+                      <strong>Note:</strong> Tolls, permit, and parking will be charged extra. Final fare may vary slightly based on actual distance and waiting time.
                     </div>
                   </>
                 ) : (
